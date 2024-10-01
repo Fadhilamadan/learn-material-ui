@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import {
   DataGridPremium,
+  GridToolbar,
+  GridToolbarContainer,
+  useGridApiRef,
   type GridColDef,
   type GridFilterModel,
   type GridPaginationModel,
   type GridRowParams,
-  GridToolbar,
-  GridToolbarContainer,
 } from "@mui/x-data-grid-premium";
 
 import { pokedex } from "../utils/pokedex";
-import { Box, Button } from "@mui/material";
+import { Box, Button, ButtonGroup, Tooltip } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
 
@@ -38,6 +40,8 @@ const generateNewRow = () => {
 };
 
 const DataGridComponent: React.FC = () => {
+  const apiRef = useGridApiRef();
+
   const [rows, setRows] = useState(pokedex);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
 
@@ -52,6 +56,10 @@ const DataGridComponent: React.FC = () => {
   const handleAddRow = () => {
     const newRow = generateNewRow();
     setRows((prevRows: any) => [newRow, ...prevRows]);
+
+    setTimeout(() => {
+      apiRef.current.startRowEditMode({ id: newRow.id });
+    });
   };
 
   const handleUpdateRow = (updatedRow: any) => {
@@ -60,6 +68,10 @@ const DataGridComponent: React.FC = () => {
 
   const handleDeleteRows = (selectedRowIds: number[]) => {
     setRows(rows.filter((row) => !selectedRowIds.includes(row.id)));
+  };
+
+  const handlePageSize = () => {
+    return apiRef.current.setPageSize(15);
   };
 
   const CustomToolbar = () => {
@@ -72,19 +84,31 @@ const DataGridComponent: React.FC = () => {
           width="100%"
         >
           <GridToolbar />
-          {selectedRows.length > 0 && (
+          <ButtonGroup>
+            {selectedRows.length > 0 && (
+              <Button
+                size="small"
+                startIcon={<DeleteIcon />}
+                variant="outlined"
+                onClick={() => handleDeleteRows(selectedRows)}
+              >
+                Delete a row(s)
+              </Button>
+            )}
             <Button
               size="small"
-              startIcon={<DeleteIcon />}
+              startIcon={<AddIcon />}
               variant="outlined"
-              onClick={() => handleDeleteRows(selectedRows)}
+              onClick={handleAddRow}
             >
-              Delete a row(s)
+              Add a row
             </Button>
-          )}
-          <Button size="small" variant="outlined" onClick={handleAddRow}>
-            Add a row
-          </Button>
+            <Tooltip title="Test API Grid">
+              <Button size="small" variant="outlined" onClick={handlePageSize}>
+                Page size 15
+              </Button>
+            </Tooltip>
+          </ButtonGroup>
         </Box>
       </GridToolbarContainer>
     );
@@ -158,6 +182,7 @@ const DataGridComponent: React.FC = () => {
 
   return (
     <DataGridPremium
+      apiRef={apiRef}
       // data
       rows={rows}
       columns={columns}
