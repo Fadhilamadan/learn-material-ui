@@ -1,19 +1,24 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import MenuItem from "@mui/material/MenuItem";
-import SchoolIcon from "@mui/icons-material/School";
+import React from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Button,
+  MenuItem,
+} from "@mui/material";
+import { Menu as MenuIcon, School as SchoolIcon } from "@mui/icons-material";
 
-const pages = ["DataGrid"];
+const pages = [
+  { label: "Home", path: "/" },
+  { label: "DataGrid", path: "/datagrid" },
+  { label: "Tabs", path: "/tabs" },
+];
 
-const NavbarComponent = () => {
+const Navbar: React.FC = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
@@ -30,8 +35,9 @@ const NavbarComponent = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* DESKTOP */}
+          {/* Desktop Logo */}
           <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+
           <Typography
             variant="h6"
             noWrap
@@ -49,10 +55,12 @@ const NavbarComponent = () => {
           >
             MUI
           </Typography>
+
+          {/* Mobile Menu Button */}
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="open navigation menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
@@ -60,6 +68,8 @@ const NavbarComponent = () => {
             >
               <MenuIcon />
             </IconButton>
+
+            {/* Mobile Menu */}
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
@@ -71,15 +81,23 @@ const NavbarComponent = () => {
               sx={{ display: { xs: "block", md: "none" } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: "center" }}>{page}</Typography>
+                <MenuItem key={page.label} onClick={handleCloseNavMenu}>
+                  <Typography
+                    textAlign="center"
+                    component="a"
+                    href={page.path}
+                    sx={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    {page.label}
+                  </Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
 
-          {/* MOBILE */}
+          {/* Mobile Logo */}
           <SchoolIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+
           <Typography
             variant="h5"
             noWrap
@@ -98,14 +116,18 @@ const NavbarComponent = () => {
           >
             MUI
           </Typography>
+
+          {/* Desktop Menu */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
-                key={page}
+                key={page.label}
+                component="a"
+                href={page.path}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
-                {page}
+                {page.label}
               </Button>
             ))}
           </Box>
@@ -115,4 +137,4 @@ const NavbarComponent = () => {
   );
 };
 
-export default NavbarComponent;
+export default Navbar;
