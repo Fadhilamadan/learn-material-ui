@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   DataGridPremium,
   GridToolbar,
@@ -40,6 +41,7 @@ const generateNewRow = () => {
 };
 
 const DataGridComponent: React.FC = () => {
+  const navigate = useNavigate();
   const apiRef = useGridApiRef();
 
   const [rows, setRows] = useState(pokedex);
@@ -72,6 +74,10 @@ const DataGridComponent: React.FC = () => {
 
   const handlePageSize = () => {
     return apiRef.current.setPageSize(15);
+  };
+
+  const handleRowClick = (params: GridRowParams) => {
+    navigate(`/details/${params.id}`);
   };
 
   const CustomToolbar = () => {
@@ -210,6 +216,8 @@ const DataGridComponent: React.FC = () => {
         handleUpdateRow(newRow);
         return newRow;
       }}
+      // redirect
+      onRowClick={handleRowClick}
     />
   );
 };
