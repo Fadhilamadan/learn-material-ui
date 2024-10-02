@@ -11,7 +11,7 @@ import {
 
 import { pokedex } from "../utils/pokedex";
 
-const DetailDataGridComponent: React.FC = () => {
+const DetailDataGrid: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -72,4 +72,4 @@ const DetailDataGridComponent: React.FC = () => {
   );
 };
 
-export default DetailDataGridComponent;
+export default DetailDataGrid;

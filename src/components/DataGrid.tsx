@@ -40,7 +40,7 @@ const generateNewRow = () => {
   };
 };
 
-const DataGridComponent: React.FC = () => {
+const DataGrid: React.FC = () => {
   const navigate = useNavigate();
   const apiRef = useGridApiRef();
 
@@ -77,7 +77,7 @@ const DataGridComponent: React.FC = () => {
   };
 
   const handleRowClick = (params: GridRowParams) => {
-    navigate(`/details/${params.id}`);
+    navigate(`/datagrid/${params.id}`);
   };
 
   const CustomToolbar = () => {
@@ -177,7 +177,10 @@ const DataGridComponent: React.FC = () => {
         return (
           <IconButton
             aria-label="delete"
-            onClick={() => handleDeleteRows([row.id])}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleDeleteRows([row.id]);
+            }}
           >
             <DeleteIcon />
           </IconButton>
@@ -222,4 +225,4 @@ const DataGridComponent: React.FC = () => {
   );
 };
 
-export default DataGridComponent;
+export default DataGrid;
