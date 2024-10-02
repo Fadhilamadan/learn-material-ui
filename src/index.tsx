@@ -6,7 +6,7 @@ import { Container } from "@mui/material";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import NavbarComponent from "./components/NavbarComponent";
+import Navbar from "./components/Navbar";
 import Box from "@mui/material/Box";
 
 const root = ReactDOM.createRoot(
@@ -16,7 +16,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Box mb={4}>
-      <NavbarComponent />
+      <Navbar />
     </Box>
     <Container>
       <BrowserRouter>
