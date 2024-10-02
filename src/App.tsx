@@ -1,14 +1,17 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import DataGridComponent from "./components/DataGridComponent";
-import DetailDataGridComponent from "./components/DetailDataGridComponent";
+import DataGrid from "./components/DataGrid";
+import DetailDataGrid from "./components/DetailDataGrid";
+import Tabs from "./components/Tabs";
 
 const App: React.FC = () => {
   return (
     <Routes>
-      <Route path="/" element={<DataGridComponent />} />
-      <Route path="/details/:id" element={<DetailDataGridComponent />} />
+      <Route path="/" element={<DataGrid />} />
+      <Route path="/datagrid" element={<DataGrid />} />
+      <Route path="/datagrid/:id" element={<DetailDataGrid />} />
+      <Route path="/tabs" element={<Tabs />} />
     </Routes>
   );
 };
