@@ -41,6 +41,9 @@ const Tabs = () => {
         value={value}
         onChange={handleChange}
         aria-label="basic tabs example"
+        variant="scrollable"
+        scrollButtons
+        allowScrollButtonsMobile
       >
         {tabs.map((tab, index) => (
           <Tab
