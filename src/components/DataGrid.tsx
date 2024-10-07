@@ -1,5 +1,16 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Pagination,
+  TablePagination,
+  Tooltip,
+} from "@mui/material";
 import {
   DataGridPremium,
   GridToolbar,
@@ -12,14 +23,10 @@ import {
 } from "@mui/x-data-grid-premium";
 
 import { pokedex } from "../utils/pokedex";
-import { Box, Button, ButtonGroup, Tooltip } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
-import IconButton from "@mui/material/IconButton";
 
 const generateNewRow = () => {
   return {
-    id: 123456,
+    id: Date.now(),
     sprite: "https://placehold.co/40x40.png",
     name: {
       english: "",
@@ -51,9 +58,13 @@ const DataGrid: React.FC = () => {
     items: [],
   });
   const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
-    pageSize: 10,
+    pageSize: 5,
     page: 0,
   });
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(rows.length / paginationModel.pageSize);
+  }, [rows.length, paginationModel.pageSize]);
 
   const handleAddRow = () => {
     const newRow = generateNewRow();
@@ -78,6 +89,13 @@ const DataGrid: React.FC = () => {
 
   const handleRowClick = (params: GridRowParams) => {
     navigate(`/datagrid/${params.id}`);
+  };
+
+  const handlePaginationChange = (_: unknown, value: number) => {
+    setPaginationModel((prev) => ({
+      ...prev,
+      page: value - 1,
+    }));
   };
 
   const CustomToolbar = () => {
@@ -190,38 +208,72 @@ const DataGrid: React.FC = () => {
   ];
 
   return (
-    <DataGridPremium
-      apiRef={apiRef}
-      // data
-      rows={rows}
-      columns={columns}
-      // pagination
-      pagination
-      paginationModel={paginationModel}
-      onPaginationModelChange={setPaginationModel}
-      // toolbar
-      slots={{ toolbar: CustomToolbar }}
-      // filter
-      headerFilters
-      filterModel={filterModel}
-      onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
-      // select
-      checkboxSelection
-      onRowSelectionModelChange={(ids) => setSelectedRows(ids as number[])}
-      isRowSelectable={({ row }: GridRowParams) => row.base?.HP >= 40} // INFO: there is no specific reason for this.
-      // edit
-      editMode="row"
-      processRowUpdate={(newRow: any, oldRow: any) => {
-        if (!newRow.name.english) {
-          return oldRow;
-        }
+    <>
+      <DataGridPremium
+        apiRef={apiRef}
+        // data
+        rows={rows}
+        columns={columns}
+        // pagination
+        pagination
+        paginationMode="client"
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+        // toolbar
+        slots={{ toolbar: CustomToolbar }}
+        // filter
+        headerFilters
+        filterModel={filterModel}
+        onFilterModelChange={(newFilterModel) => setFilterModel(newFilterModel)}
+        // select
+        checkboxSelection
+        onRowSelectionModelChange={(ids) => setSelectedRows(ids as number[])}
+        isRowSelectable={({ row }: GridRowParams) => row.base?.HP >= 40} // INFO: there is no specific reason for this.
+        // edit
+        editMode="row"
+        processRowUpdate={(newRow: any, oldRow: any) => {
+          if (!newRow.name.english) {
+            return oldRow;
+          }
 
-        handleUpdateRow(newRow);
-        return newRow;
-      }}
-      // redirect
-      onRowClick={handleRowClick}
-    />
+          handleUpdateRow(newRow);
+          return newRow;
+        }}
+        // redirect
+        onRowClick={handleRowClick}
+      />
+
+      <TablePagination
+        component="div"
+        count={rows.length}
+        page={paginationModel.page}
+        onPageChange={(_: unknown, page: number) =>
+          setPaginationModel({ ...paginationModel, page })
+        }
+        rowsPerPageOptions={[5, 10, 25, 50, 100]}
+        rowsPerPage={paginationModel.pageSize}
+        onRowsPerPageChange={(event) =>
+          setPaginationModel({
+            page: 0,
+            pageSize: Number(event.target.value),
+          })
+        }
+      />
+
+      <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+        <Pagination
+          count={totalPages}
+          siblingCount={1}
+          boundaryCount={1}
+          page={paginationModel.page + 1}
+          onChange={handlePaginationChange}
+          color="primary"
+          shape="rounded"
+          showFirstButton
+          showLastButton
+        />
+      </Box>
+    </>
   );
 };
 
